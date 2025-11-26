@@ -1,0 +1,232 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Cores Base */
+  --color-background-soft: #f8f9fa;
+  --color-component-background: #ffffff;
+  --color-primary-dark: #004d7a; /* Azul Marinho Profundo */
+  --color-text-dark: #212529;
+  --color-text-light: #6c757d;
+  --color-border-light: #dee2e6;
+
+  /* Cores da Tabela (Profundas) */
+  --color-set1: #158f72; /* Verde Esmeralda */
+  --color-set2: #b8860b; /* Ouro Escuro */
+  --color-set3: #007bff; /* Azul Sóbrio */
+}
+
+/* --- Estilos Gerais --- */
+body {
+  font-family: "Roboto", "Arial", sans-serif;
+  background-color: var(--color-background-soft);
+  color: var(--color-text-dark);
+  margin: 0;
+  padding: 30px;
+  line-height: 1.6;
+}
+
+/* --- Controle (Filtros) --- */
+.controleOSsGS {
+  background-color: var(--color-component-background);
+  padding: 30px;
+  border-radius: 6px;
+  /* Sombra mais refinada e sutil */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 40px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  margin-bottom: 40px;
+  border-top: 4px solid var(--color-primary-dark); /* Linha de destaque */
+}
+
+/* Estilo para Select e Input[type="number"] */
+.controleOSsGS select,
+.controleOSsGS input[type="number"] {
+  padding: 12px 15px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 4px;
+  font-size: 15px;
+  color: var(--color-text-dark);
+  min-width: 160px;
+  /* Transição para efeito de foco profissional */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.controleOSsGS select:focus,
+.controleOSsGS input[type="number"]:focus {
+  border-color: var(--color-primary-dark);
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 77, 122, 0.25);
+}
+
+.controleOSsGS input[type="number"]::placeholder {
+  color: var(--color-text-light);
+}
+
+/* Estilo para Botão 'Checar' */
+#coletarDadosGS {
+  background-color: var(--color-primary-dark);
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  letter-spacing: 0.5px;
+}
+
+#coletarDadosGS:hover {
+  background-color: #003757; /* Azul mais escuro no hover */
+}
+
+#coletarDadosGS:active {
+  transform: translateY(1px);
+}
+
+/*
+#resultado {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-light);
+  background: white;
+  margin-top: 30px;
+}
+
+
+#resultado .header {
+  display: grid;
+  grid-template-columns:
+    140px 
+    180px 
+    180px 
+    180px 
+    180px 
+    180px 
+    180px; 
+
+  background: var(--color-primary-dark);
+  color: white;
+  font-weight: bold;
+  border-bottom: 3px solid var(--color-border-light);
+}
+
+#resultado .header h2 {
+  padding: 14px 10px;
+  text-align: center;
+  margin: 0;
+  font-size: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#resultado .header h2:last-child {
+  border-right: none;
+}
+
+#resultado .body {
+  display: grid;
+  grid-template-columns:
+    140px
+    180px
+    180px
+    180px
+    180px
+    180px
+    180px;
+  min-height: 50px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+#resultado .body > div {
+  border-right: 1px solid #ececec;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#resultado .body > div:last-child {
+  border-right: none;
+}
+
+#resultado .body h3 {
+  margin: 0;
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--color-text-dark);
+  border-bottom: 1px solid #f3f3f3;
+}
+
+#resultado .body h3:last-child {
+  border-bottom: none;
+}
+
+#resultado .body:nth-child(even) {
+  background: #fafafa;
+}
+
+.tipoGS h3,
+.valorGS h3 {
+  color: var(--color-set2); 
+  font-weight: 600;
+}
+
+.tipoPasta h3,
+.valorPasta h3 {
+  color: var(--color-set1); 
+  font-weight: 600;
+}
+
+.tipoFatura h3,
+.valorFatura h3 {
+  color: var(--color-set3);
+  font-weight: 600;
+}
+
+
+.numeroOS h3 {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  font-size: 17px;
+}
+*/
+
+#resultado {
+}
+
+.header {
+  background: red;
+  display: flex;
+  justify-content: space-between;
+  & h2 {
+    border: 2px solid yellow;
+    width: 100%;
+    text-align: center;
+  }
+}
+.body {
+  background: cyan;
+  display: flex;
+  justify-content: space-between;
+}
+
+.body div {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid black;
+  width: 100%;
+  text-align: center;
+
+  & h3 {
+    border: 1px solid green;
+  }
+}
