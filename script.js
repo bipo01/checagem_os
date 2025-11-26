@@ -26,8 +26,6 @@ nfsPasta.addEventListener("change", () => {
       );
       return { numeroOS, tipo, valor, origem: "Pasta" };
     });
-
-  console.log(nfsPastaArr);
 });
 
 document.addEventListener("click", async (e) => {
@@ -113,7 +111,11 @@ document.addEventListener("click", async (e) => {
         return order[a.tipo] - order[b.tipo];
       });
 
-      ["M", "P"].forEach((tipo) => {
+      console.log(todasNFs);
+
+      const tipos = ["M", "P"];
+
+      tipos.forEach((tipo) => {
         const nfsGS = todasNFs.filter(
           (n) => n.tipo === tipo && n.origem === "GS"
         );
@@ -141,7 +143,10 @@ document.addEventListener("click", async (e) => {
         if (nfsGS.length > 0) {
           resultado
             .querySelector(".tipoGS")
-            .insertAdjacentHTML("beforeend", `<h3>${tipo}</h3>`);
+            .insertAdjacentHTML(
+              "beforeend",
+              `<h3>${tipo == "P" ? "Peças" : "Mão de Obra"}</h3>`
+            );
           resultado
             .querySelector(".valorGS")
             .insertAdjacentHTML("beforeend", `<h3>R$ ${nfsGS[0].valor}</h3>`);
