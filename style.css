@@ -1,3 +1,4 @@
+/* --- Estilos Globais e Variáveis --- */
 * {
   margin: 0;
   padding: 0;
@@ -12,14 +13,12 @@
   --color-text-dark: #212529;
   --color-text-light: #6c757d;
   --color-border-light: #dee2e6;
-
-  /* Cores da Tabela (Profundas) */
-  --color-set1: #158f72; /* Verde Esmeralda */
-  --color-set2: #b8860b; /* Ouro Escuro */
-  --color-set3: #007bff; /* Azul Sóbrio */
+  --color-success: #158f72; /* Verde Esmeralda (Set 1) */
+  --color-warning: #b8860b; /* Ouro Escuro (Set 2) */
+  --color-info: #007bff; /* Azul Sóbrio (Set 3) */
 }
 
-/* --- Estilos Gerais --- */
+/* --- Estilos do Body --- */
 body {
   font-family: "Roboto", "Arial", sans-serif;
   background-color: var(--color-background-soft);
@@ -29,19 +28,19 @@ body {
   line-height: 1.6;
 }
 
-/* --- Controle (Filtros) --- */
+/* --- Controle (Filtros e Inputs) --- */
 .controleOSsGS {
   background-color: var(--color-component-background);
   padding: 30px;
-  border-radius: 6px;
+  border-radius: 8px; /* Arredondamento um pouco maior */
   /* Sombra mais refinada e sutil */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 40px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 20px 40px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   align-items: flex-end;
   margin-bottom: 40px;
-  border-top: 4px solid var(--color-primary-dark); /* Linha de destaque */
+  border-top: 5px solid var(--color-primary-dark); /* Linha de destaque */
 }
 
 /* Estilo para Select e Input[type="number"] */
@@ -53,7 +52,6 @@ body {
   font-size: 15px;
   color: var(--color-text-dark);
   min-width: 160px;
-  /* Transição para efeito de foco profissional */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -68,7 +66,50 @@ body {
   color: var(--color-text-light);
 }
 
-/* Estilo para Botão 'Checar' */
+/* --- Estilização Avançada do Input File --- */
+
+.input-wrapper {
+  /* Container que engloba o label customizado e o input real */
+  position: relative;
+  overflow: hidden; /* Importante para manter a forma */
+  display: inline-block;
+}
+
+/* O Label será o botão visual */
+.input-wrapper label {
+  background-color: var(--color-text-light); /* Cor neutra para o botão */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  white-space: nowrap; /* Evita quebra de linha no texto */
+  display: block; /* Garante que o padding funcione corretamente */
+}
+
+.input-wrapper label:hover {
+  background-color: #5a6268; /* Escurece um pouco no hover */
+}
+
+/* O Input File real - Escondido mas clicável */
+.input-wrapper input[type="file"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  /* IMPORTANTE: Permite que o label abaixo seja clicável */
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+
+  /* ESCONDE O INPUT, mantendo-o na DOM */
+  opacity: 0;
+}
+
+/* --- Estilo para Botão 'Checar' --- */
 #coletarDadosGS {
   background-color: var(--color-primary-dark);
   color: white;
@@ -90,143 +131,180 @@ body {
   transform: translateY(1px);
 }
 
-/*
+/* --- Estilos da Tabela de Resultado --- */
 #resultado {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--color-border-light);
-  background: white;
-  margin-top: 30px;
+  border-radius: 8px;
+  overflow: hidden; /* Garante que o header e o body respeitem o radius */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-
-#resultado .header {
-  display: grid;
-  grid-template-columns:
-    140px 
-    180px 
-    180px 
-    180px 
-    180px 
-    180px 
-    180px; 
-
-  background: var(--color-primary-dark);
-  color: white;
-  font-weight: bold;
-  border-bottom: 3px solid var(--color-border-light);
-}
-
-#resultado .header h2 {
-  padding: 14px 10px;
-  text-align: center;
-  margin: 0;
-  font-size: 16px;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-#resultado .header h2:last-child {
-  border-right: none;
-}
-
-#resultado .body {
-  display: grid;
-  grid-template-columns:
-    140px
-    180px
-    180px
-    180px
-    180px
-    180px
-    180px;
-  min-height: 50px;
-  border-bottom: 1px solid #e6e6e6;
-}
-
-#resultado .body > div {
-  border-right: 1px solid #ececec;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-#resultado .body > div:last-child {
-  border-right: none;
-}
-
-#resultado .body h3 {
-  margin: 0;
-  padding: 12px 8px;
-  text-align: center;
-  font-size: 15px;
-  color: var(--color-text-dark);
-  border-bottom: 1px solid #f3f3f3;
-}
-
-#resultado .body h3:last-child {
-  border-bottom: none;
-}
-
-#resultado .body:nth-child(even) {
-  background: #fafafa;
-}
-
-.tipoGS h3,
-.valorGS h3 {
-  color: var(--color-set2); 
-  font-weight: 600;
-}
-
-.tipoPasta h3,
-.valorPasta h3 {
-  color: var(--color-set1); 
-  font-weight: 600;
-}
-
-.tipoFatura h3,
-.valorFatura h3 {
-  color: var(--color-set3);
-  font-weight: 600;
-}
-
-
-.numeroOS h3 {
-  font-weight: 700;
-  color: var(--color-primary-dark);
-  font-size: 17px;
-}
-*/
-
-#resultado {
-}
-
+/* Cabeçalho */
 .header {
-  background: red;
+  background: var(--color-primary-dark); /* Fundo escuro profissional */
   display: flex;
   justify-content: space-between;
-  & h2 {
-    border: 2px solid yellow;
-    width: 100%;
-    text-align: center;
-  }
+  border-bottom: none; /* Já tem o background de cor sólida */
 }
+
+.header h2 {
+  width: 100%;
+  text-align: center;
+  padding: 12px 0; /* Mais padding */
+  color: white; /* Texto branco */
+  font-weight: 600;
+  font-size: 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.2); /* Separador branco sutil */
+}
+
+.header h2:last-child {
+  border-right: none;
+}
+
+/* Corpo */
 .body {
-  background: cyan;
+  background: var(--color-component-background);
   display: flex;
   justify-content: space-between;
+  border-radius: 0 0 8px 8px; /* Arredonda apenas embaixo */
 }
 
 .body div {
   display: flex;
   flex-direction: column;
-  border: 2px solid black;
   width: 100%;
   text-align: center;
+  border-right: 1px solid var(--color-border-light);
+  padding: 0; /* Removendo padding do div container */
+}
 
-  & h3 {
-    border: 1px solid green;
-  }
+.body div:last-child {
+  border-right: none;
+}
+
+.body div h3 {
+  padding: 10px 0; /* Padding consistente */
+  color: var(--color-text-dark);
+  font-weight: 400; /* Texto de valor mais leve */
+  font-size: 14px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Remove a borda do último h3 (última linha) */
+.body div h3:last-child {
+  border-bottom: none;
+}
+
+/* --- Estilos de Estado de Dados (Cores Suaves e Temáticas) --- */
+
+/* Fundo Geral da Linha (para contraste e distinção de coluna) */
+/* Os backgrounds das colunas devem ser aplicados ao DIV, não ao H3, 
+   para garantir que a cor de fundo seja consistente para todos os H3s da coluna.
+   Entretanto, se a lógica é para destacar apenas o H3, mantemos assim.
+   O código JS está adicionando a classe no H3, então a lógica é manter no H3.
+*/
+
+/* Valores da GS (verde suave - Primary/Success) */
+.tipoGS h3,
+.valorGS h3 {
+  /* Fundo muito sutil, aplicado diretamente ao h3 para alternar com os outros */
+  background: #f0fff4;
+}
+
+/* Valores da Pasta (amarelo / dourado suave - Warning) */
+.tipoPasta h3,
+.valorPasta h3 {
+  background: #fff8e1; /* Pastel leve de ouro */
+}
+
+/* Valores da Fatura (azul suave - Info) */
+.tipoFatura h3,
+.valorFatura h3 {
+  background: #e6f7ff; /* Pastel leve de azul */
+}
+
+/* Para valores divergentes (Alerta de diferença - Amarelo mais forte) */
+.valoresDiferentes {
+  /* Substitui a cor de fundo do h3 por um amarelo mais visível */
+  background: #fff3cd !important;
+  color: var(--color-warning); /* Texto em Ouro Escuro */
+  font-weight: 600 !important;
+}
+
+/* Para valores nulos (Fundo de atenção - Vermelho suave) */
+.h3Null {
+  /* Fundo vermelho muito suave, indica dado faltando */
+  background: #fdeaea !important;
+  color: #dc3545; /* Texto em vermelho mais legível */
+  font-weight: 500 !important;
+}
+
+/* --- Seção de Totais de Comparação --- */
+
+.totais {
+  display: grid;
+  /* Divide em 3 colunas iguais para GS, Pasta e Fatura */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px; /* Espaço entre os cartões */
+  margin-bottom: 40px;
+}
+
+.totais h2 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid; /* Linha de destaque */
+}
+
+.totais h3 {
+  font-size: 0.95em;
+  font-weight: 400;
+  margin-bottom: 5px;
+  color: var(--color-text-dark);
+}
+
+/* Estilo Base para os Cartões Individuais */
+.totalGS,
+.totalPasta,
+.totalFatura {
+  background-color: var(--color-component-background);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); /* Sombra suave */
+  transition: transform 0.3s ease;
+}
+
+.totalGS:hover,
+.totalPasta:hover,
+.totalFatura:hover {
+  transform: translateY(-2px); /* Efeito sutil de elevação */
+}
+
+/* Destaque de Cor por Origem */
+
+/* 1. GS (Verde Esmeralda - Set 1 / Sucesso) */
+.totalGS {
+  border-left: 5px solid var(--color-success);
+}
+.totalGS h2 {
+  color: var(--color-success);
+  border-color: rgba(21, 143, 114, 0.3); /* Linha mais clara */
+}
+
+/* 2. Pasta (Ouro Escuro - Set 2 / Aviso) */
+.totalPasta {
+  border-left: 5px solid var(--color-warning);
+}
+.totalPasta h2 {
+  color: var(--color-warning);
+  border-color: rgba(184, 134, 11, 0.3);
+}
+
+/* 3. Fatura (Azul Sóbrio - Set 3 / Info) */
+.totalFatura {
+  border-left: 5px solid var(--color-info);
+}
+.totalFatura h2 {
+  color: var(--color-info);
+  border-color: rgba(0, 123, 255, 0.3);
 }

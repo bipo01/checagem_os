@@ -2,6 +2,11 @@ const mesFinalizacaoGS = document.querySelector("#mesFinalizacaoGS");
 const anoFinalizacaoGS = document.querySelector("#anoFinalizacaoGS");
 
 const nfsPasta = document.querySelector("#nfsPasta");
+const fatura = document.querySelector("#fatura");
+
+const totalGS = document.querySelector(".totalGS");
+const totalPasta = document.querySelector(".totalPasta");
+const totalFatura = document.querySelector(".totalFatura");
 
 const resultado = document.querySelector("#resultado");
 
@@ -9,122 +14,100 @@ let nfsPastaArr;
 let nfsGS = [];
 let dataGS;
 let headerGS;
+let nfsFatura;
 
 nfsPasta.addEventListener("change", () => {
-	nfsPastaArr = [...nfsPasta.files]
-		.map((file) => file.name)
-		.map((name) => {
-			const formattedNameArr = name.split("-");
-			const numeroOS = formattedNameArr[0].trim().split(" ").at(-1);
-			const tipo = formattedNameArr[1].toUpperCase().includes("P") ? "P" : "M";
-			const valor = Number(formattedNameArr[2].trim().split(".")[0].replaceAll(".", "").replaceAll(",", "."));
-			return { numeroOS, tipo, valor, origem: "Pasta" };
-		});
+  nfsPastaArr = [...nfsPasta.files]
+    .map((file) => file.name)
+    .map((name) => {
+      const formattedNameArr = name.split("-");
+      const numeroOS = formattedNameArr[0].trim().split(" ").at(-1);
+      const tipo = formattedNameArr[1].toUpperCase().includes("P") ? "P" : "M";
+      const valor = Number(
+        formattedNameArr[2]
+          .trim()
+          .split(".")[0]
+          .replaceAll(".", "")
+          .replaceAll(",", ".")
+      );
+      return { numeroOS, tipo, valor, origem: "Pasta" };
+    });
 });
 
-document.addEventListener("click", async (e) => {
-	const element = e.target;
+fatura.addEventListener("change", async () => {
+  const file = fatura.files[0];
+  if (!file) return alert("Selecione um PDF.");
 
-	if (element.id === "coletarDadosGS") {
-		resultado.querySelector(`.numeroOS`).innerHTML = "";
-		resultado.querySelector(`.tipoGS`).innerHTML = "";
-		resultado.querySelector(`.tipoPasta`).innerHTML = "";
-		resultado.querySelector(`.tipoFatura`).innerHTML = "";
-		resultado.querySelector(`.valorGS`).innerHTML = "";
-		resultado.querySelector(`.valorPasta`).innerHTML = "";
-		resultado.querySelector(`.valorFatura`).innerHTML = "";
-		nfsGS = [];
-		const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTfM0nGoCsDmmp0W15By-T3GP9ncKCtTDSQ2XHgnQHnLQVpjZqQAXe42NpsMIRd9-UkxH34g8y2zo3Q/pub?gid=0&single=true&output=csv");
+  const arrayBuffer = await file.arrayBuffer();
 
-		const csvText = await response.text();
-
-		const parsed = Papa.parse(csvText, {
-			header: false,
-			skipEmptyLines: true,
-		});
-
-		dataGS = parsed.data.slice(1);
-
-		headerGS = {};
-
-		parsed.data[0].forEach((col, i) => (headerGS[`${col}`] = i));
-
-		const filteredData = dataGS.filter((row) => row[headerGS["Mês de Finalização"]] == mesFinalizacaoGS.value && row[headerGS["Ano de Finalização"]] == anoFinalizacaoGS.value);
-		let totalPecas = 0;
-		let totalMaoDeObra = 0;
-		let total = 0;
-
-		filteredData.forEach((row) => {
-			const valorPecas = toNumberBR(row[headerGS["Peças"]]);
-			const valorMaoDeObra = toNumberBR(row[headerGS["Mão de Obra"]]);
-			const valorTotal = toNumberBR(row[headerGS["Total"]]);
-
-			totalPecas += valorPecas;
-			totalMaoDeObra += valorMaoDeObra;
-			total += valorTotal;
-		});
-
-		filteredData.forEach((row) => {
-			const numeroOS = row[headerGS["O.S"]];
-			let tipo;
-			let valor;
-			if (toNumberBR(row[headerGS["Peças"]]) > 0) {
-				tipo = "P";
-				valor = toNumberBR(row[headerGS["Peças"]]);
-				nfsGS.push({ numeroOS, tipo, valor, origem: "GS" });
-			}
-
-			if (toNumberBR(row[headerGS["Mão de Obra"]]) > 0) {
-				tipo = "M";
-				valor = toNumberBR(row[headerGS["Mão de Obra"]]);
-				nfsGS.push({ numeroOS, tipo, valor, origem: "GS" });
-			}
-		});
-
-		const todasOSs = [...new Set([...(nfsGS?.map((el) => el.numeroOS) ?? []), ...(nfsPastaArr?.map((el) => el.numeroOS) ?? [])])].sort((a, b) => {
-			return Number(a) - Number(b);
-		});
-
-		const origens = ["GS", "Pasta", "Fatura"];
-
-		todasOSs.forEach((os) => {
-			const todasNFs = [...(nfsGS?.filter((nf) => nf.numeroOS == os) ?? []), ...(nfsPastaArr?.filter((nf) => nf.numeroOS == os) ?? [])].sort((a, b) => {
-				const order = { P: 1, M: 2 };
-				return order[a.tipo] - order[b.tipo];
-			});
-
-			const todasMO = todasNFs.filter((nf) => nf.tipo === "M");
-			const todasPC = todasNFs.filter((nf) => nf.tipo === "P");
-
-			if (todasMO.length > 0) {
-				resultado.querySelector(".numeroOS").insertAdjacentHTML("beforeend", `<h3>${os}</h3>`);
-
-				const obj = origens.map((orig) => {
-					const nf = todasMO.find((el) => el.origem === orig);
-					if (!nf) return { numeroOS: os, tipo: "-", valor: "-", origem: orig };
-					return nf;
-				});
-
-				obj.forEach((nf) => {
-					resultado.querySelector(`.tipo${nf.origem}`).insertAdjacentHTML("beforeend", `<h3>${nf.tipo}</h3>`);
-					resultado.querySelector(`.valor${nf.origem}`).insertAdjacentHTML("beforeend", `<h3>${nf.valor}</h3>`);
-				});
-			}
-
-			if (todasPC.length > 0) {
-				resultado.querySelector(".numeroOS").insertAdjacentHTML("beforeend", `<h3>${os}</h3>`);
-
-				const obj = origens.map((orig) => {
-					const nf = todasPC.find((el) => el.origem === orig);
-					if (!nf) return { numeroOS: os, tipo: "-", valor: "-", origem: orig };
-					return nf;
-				});
-
-				obj.forEach((nf) => {
-					resultado.querySelector(`.tipo${nf.origem}`).insertAdjacentHTML("beforeend", `<h3>${nf.tipo}</h3>`);
-					resultado.querySelector(`.valor${nf.origem}`).insertAdjacentHTML("beforeend", `<h3>${nf.valor}</h3>`);
-				});
-			}
-		});
-	}
+  extractPDF(arrayBuffer);
 });
+
+async function extractPDF(arrayBuffer) {
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+  let textoFinal = "";
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+
+    const pageText = content.items.map((item) => item.str).join(" ");
+
+    textoFinal += "\n" + pageText;
+  }
+
+  const linhas = separarPorLinha(
+    extrairSecao(textoFinal, "Ordem de Compra / Serviço")
+  );
+
+  nfsFatura = linhas.map((linha) => {
+    const linhaArr = linha.split(" ");
+
+    const dinheiros = linhaArr
+      .map((el, i) => {
+        if (el === "R$") {
+          return linhaArr[i + 1];
+        }
+      })
+      .filter((el) => el);
+    const valorMO = Number(
+      dinheiros[0].replaceAll(".", "").replaceAll(",", ".")
+    );
+    const valorPC = Number(
+      dinheiros[1].replaceAll(".", "").replaceAll(",", ".")
+    );
+
+    const valor = valorMO > 0 ? valorMO : valorPC;
+
+    const numOS = linhaArr[0];
+    const tipo = valorMO > 0 ? "M" : "P";
+
+    return { numeroOS: numOS, tipo, valor, origem: "Fatura" };
+  });
+}
+
+function extrairSecao(texto, titulo) {
+  const cleanText = texto.replace(/\s+/g, " ").trim();
+
+  // Procura a posição exata do título
+  const indexTitulo = cleanText.toUpperCase().indexOf(titulo.toUpperCase());
+
+  if (indexTitulo === -1) {
+    return `❌ Seção "${titulo}" não encontrada.`;
+  }
+
+  // Corta exatamente DEPOIS do título
+  let depois = cleanText.slice(indexTitulo + titulo.length).trim();
+
+  return depois;
+}
+
+function separarPorLinha(texto) {
+  return texto
+    .replace(/(\d{4,6}\s+\d{2}\/\d{2}\/\d{4})/g, "\n$1")
+    .trim()
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 5); // descarta linhas vazias
+}

@@ -1,60 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-	<head>
-		<meta charset="UTF-8" />
-		<title>Checagem O.Ss</title>
-		<link rel="stylesheet" href="style.css" />
-	</head>
-	<body>
-		<div class="controleOSsGS">
-			<select name="mesFinalizacaoGS" id="mesFinalizacaoGS">
-				<option value="Janeiro">Janeiro</option>
-				<option value="Fevereiro">Fevereiro</option>
-				<option value="Março">Março</option>
-				<option value="Abril">Abril</option>
-				<option value="Maio">Maio</option>
-				<option value="Junho">Junho</option>
-				<option value="Julho">Julho</option>
-				<option value="Agosto">Agosto</option>
-				<option value="Setembro">Setembro</option>
-				<option value="Outubro">Outubro</option>
-				<option value="Novembro">Novembro</option>
-				<option value="Dezembro">Dezembro</option>
-			</select>
-			<input type="number" name="anoFinalizacaoGS" id="anoFinalizacaoGS" placeholder="Ano de Finalização" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>Checagem O.Ss</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="controleOSsGS">
+      <select name="mesFinalizacaoGS" id="mesFinalizacaoGS">
+        <option value="Janeiro">Janeiro</option>
+        <option value="Fevereiro">Fevereiro</option>
+        <option value="Março">Março</option>
+        <option value="Abril">Abril</option>
+        <option value="Maio">Maio</option>
+        <option value="Junho">Junho</option>
+        <option value="Julho">Julho</option>
+        <option value="Agosto">Agosto</option>
+        <option value="Setembro">Setembro</option>
+        <option value="Outubro">Outubro</option>
+        <option value="Novembro">Novembro</option>
+        <option value="Dezembro">Dezembro</option>
+      </select>
+      <input
+        type="number"
+        name="anoFinalizacaoGS"
+        id="anoFinalizacaoGS"
+        placeholder="Ano de Finalização"
+      />
 
-			<div class="input-wrapper">
-				<label for="nfsPasta">Todas as NFS da pasta</label>
-				<input type="file" name="nfsPasta" id="nfsPasta" multiple />
-			</div>
+      <div class="input-wrapper">
+        <label for="nfsPasta">Todas as NFS da pasta</label>
+        <input type="file" name="nfsPasta" id="nfsPasta" multiple />
+      </div>
 
-			<button id="coletarDadosGS">Checar</button>
-		</div>
+      <div class="input-wrapper">
+        <label for="fatura">Fatura</label>
+        <input type="file" name="fatura" id="fatura" multiple />
+      </div>
 
-		<div id="resultado">
-			<div class="header">
-				<h2>O.S</h2>
-				<h2>TIPO</h2>
-				<h2>VALOR</h2>
-				<h2>TIPO</h2>
-				<h2>VALOR</h2>
-				<h2>TIPO</h2>
-				<h2>VALOR</h2>
-			</div>
+      <button id="coletarDadosGS">Checar</button>
+    </div>
 
-			<div class="body">
-				<div class="numeroOS"></div>
-				<div class="tipoGS"></div>
-				<div class="valorGS"></div>
-				<div class="tipoPasta"></div>
-				<div class="valorPasta"></div>
-				<div class="tipoFatura"></div>
-				<div class="valorFatura"></div>
-			</div>
-		</div>
-		<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <div class="totais">
+      <div class="totalGS"></div>
+      <div class="totalPasta"></div>
+      <div class="totalFatura"></div>
+    </div>
 
-		<script src="functions.js"></script>
-		<script src="script.js"></script>
-	</body>
+    <div id="resultado">
+      <div class="header">
+        <h2>O.S</h2>
+        <h2>TIPO</h2>
+        <h2>VALOR</h2>
+        <h2>TIPO</h2>
+        <h2>VALOR</h2>
+        <h2>TIPO</h2>
+        <h2>VALOR</h2>
+      </div>
+
+      <div class="body">
+        <div class="numeroOS"></div>
+        <div class="tipoGS"></div>
+        <div class="valorGS"></div>
+        <div class="tipoPasta"></div>
+        <div class="valorPasta"></div>
+        <div class="tipoFatura"></div>
+        <div class="valorFatura"></div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+    <script src="functions.js"></script>
+    <script src="script.js"></script>
+    <script src="gerarResultado.js"></script>
+  </body>
 </html>
