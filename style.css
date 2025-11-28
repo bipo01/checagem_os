@@ -308,3 +308,11 @@ body {
   color: var(--color-info);
   border-color: rgba(0, 123, 255, 0.3);
 }
+
+.totalDiferente {
+  background: #fdeaea !important;
+}
+
+.nFinalizada {
+  background: red !important;
+}

@@ -2,144 +2,30 @@ document.addEventListener("click", async (e) => {
   const element = e.target;
 
   if (element.id === "coletarDadosGS") {
-    resultado.querySelector(`.numeroOS`).innerHTML = "";
-    resultado.querySelector(`.tipoGS`).innerHTML = "";
-    resultado.querySelector(`.tipoPasta`).innerHTML = "";
-    resultado.querySelector(`.tipoFatura`).innerHTML = "";
-    resultado.querySelector(`.valorGS`).innerHTML = "";
-    resultado.querySelector(`.valorPasta`).innerHTML = "";
-    resultado.querySelector(`.valorFatura`).innerHTML = "";
-    nfsGS = [];
+    resetUI();
 
-    const response = await fetch(
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfM0nGoCsDmmp0W15By-T3GP9ncKCtTDSQ2XHgnQHnLQVpjZqQAXe42NpsMIRd9-UkxH34g8y2zo3Q/pub?gid=0&single=true&output=csv"
-    );
+    await getDataGS();
+    filterDataGS();
 
-    const csvText = await response.text();
+    insertTotals(nfsGS, "Planilha de Controle de O.Ss (PJC)", totalGS);
+    insertTotals(nfsPastaArr, "NFs baixadas", totalPasta);
+    insertTotals(nfsFatura, "Fatura", totalFatura);
 
-    const parsed = Papa.parse(csvText, {
-      header: false,
-      skipEmptyLines: true,
-    });
-
-    dataGS = parsed.data.slice(1);
-
-    headerGS = {};
-
-    parsed.data[0].forEach((col, i) => (headerGS[`${col}`] = i));
-
-    const filteredData = dataGS.filter(
-      (row) =>
-        row[headerGS["Mês de Finalização"]] == mesFinalizacaoGS.value &&
-        row[headerGS["Ano de Finalização"]] == anoFinalizacaoGS.value
-    );
-    let totalPecas = 0;
-    let totalMaoDeObra = 0;
-    let total = 0;
-
-    filteredData.forEach((row) => {
-      const valorPecas = toNumberBR(row[headerGS["Peças"]]);
-      const valorMaoDeObra = toNumberBR(row[headerGS["Mão de Obra"]]);
-      const valorTotal = toNumberBR(row[headerGS["Total"]]);
-
-      totalPecas += valorPecas;
-      totalMaoDeObra += valorMaoDeObra;
-      total += valorTotal;
-    });
-
-    filteredData.forEach((row) => {
-      const numeroOS = row[headerGS["O.S"]];
-      let tipo;
-      let valor;
-      if (toNumberBR(row[headerGS["Peças"]]) > 0) {
-        tipo = "P";
-        valor = toNumberBR(row[headerGS["Peças"]]);
-        nfsGS.push({ numeroOS, tipo, valor, origem: "GS" });
-      }
-
-      if (toNumberBR(row[headerGS["Mão de Obra"]]) > 0) {
-        tipo = "M";
-        valor = toNumberBR(row[headerGS["Mão de Obra"]]);
-        nfsGS.push({ numeroOS, tipo, valor, origem: "GS" });
-      }
-    });
-
-    const valorTotalGS = nfsGS?.reduce(
-      (acc, cur) => acc + Number(cur.valor),
-      0
-    );
-    const valorMOGS = nfsGS
-      ?.filter((el) => el.tipo === "M")
-      ?.reduce((acc, cur) => acc + Number(cur.valor), 0);
-    const valorPCGS = nfsGS
-      ?.filter((el) => el.tipo === "P")
-      ?.reduce((acc, cur) => acc + Number(cur.valor), 0);
-
-    const valorTotalPasta = nfsPastaArr?.reduce(
-      (acc, cur) => acc + Number(cur.valor),
-      0
-    );
-    const valorMOPasta = nfsPastaArr
-      ?.filter((el) => el.tipo === "M")
-      ?.reduce((acc, cur) => acc + Number(cur.valor), 0);
-    const valorPCPasta = nfsPastaArr
-      ?.filter((el) => el.tipo === "P")
-      ?.reduce((acc, cur) => acc + Number(cur.valor), 0);
-
-    const valorTotalFatura = nfsFatura?.reduce(
-      (acc, cur) => acc + Number(cur.valor),
-      0
-    );
-    const valorMOFatura = nfsFatura
-      ?.filter((el) => el.tipo === "M")
-      ?.reduce((acc, cur) => acc + Number(cur.valor), 0);
-    const valorPCFatura = nfsFatura
-      ?.filter((el) => el.tipo === "P")
-      ?.reduce((acc, cur) => acc + Number(cur.valor), 0);
-
-    if (valorTotalGS && valorMOGS && valorPCGS) {
-      totalGS.innerHTML = `
-    <h2>Planilha de Controle de O.Ss (PJC)</h2>
-    <h3>
-    Total de Mão de Obra: ${toBRL(valorMOGS)}
-    </h3>
-    <h3>
-    Total de Peças: ${toBRL(valorPCGS)}
-    </h3>
-    <h3>
-    Total: ${toBRL(valorTotalGS)}
-    </h3>
-    `;
-    }
-
-    if (valorTotalPasta && valorMOPasta && valorPCPasta) {
-      totalPasta.innerHTML = `
-    <h2>NFs Pasta</h2>
-    <h3>
-    Total de Mão de Obra: ${toBRL(valorMOPasta)}
-    </h3>
-    <h3>
-    Total de Peças: ${toBRL(valorPCPasta)}
-    </h3>
-    <h3>
-    Total: ${toBRL(valorTotalPasta)}
-    </h3>
-    `;
-    }
-
-    if (valorTotalFatura && valorMOFatura && valorPCFatura) {
-      totalFatura.innerHTML = `
-    <h2>Fatura (PRIME)</h2>
-    <h3>
-    Total de Mão de Obra: ${toBRL(valorMOFatura)}
-    </h3>
-    <h3>
-    Total de Peças: ${toBRL(valorPCFatura)}
-    </h3>
-    <h3>
-    Total: ${toBRL(valorTotalFatura)}
-    </h3>
-    `;
+    const totaisSet = [
+      ...new Set(
+        [...document.querySelectorAll(".spanTotal")].map((el) =>
+          toNumberBR(el.textContent)
+        )
+      ),
+    ];
+    if (totaisSet.length > 1) {
+      nfsGS?.length && totalGS.classList.add("totalDiferente");
+      nfsPastaArr?.length && totalPasta.classList.add("totalDiferente");
+      nfsFatura?.length && totalFatura.classList.add("totalDiferente");
+    } else {
+      totalGS.classList.remove("totalDiferente");
+      totalPasta.classList.remove("totalDiferente");
+      totalFatura.classList.remove("totalDiferente");
     }
 
     const todasOSs = [
@@ -166,11 +52,25 @@ document.addEventListener("click", async (e) => {
 
       const todasMO = todasNFs.filter((nf) => nf.tipo === "M");
       const todasPC = todasNFs.filter((nf) => nf.tipo === "P");
+      const finalizada =
+        nfsGS
+          .find((nf) => nf.numeroOS === os)
+          ?.status?.trim()
+          .toUpperCase() === "FINALIZADA"
+          ? true
+          : false;
 
       if (todasMO.length > 0) {
         resultado
           .querySelector(".numeroOS")
-          .insertAdjacentHTML("beforeend", `<h3>${os}</h3>`);
+          .insertAdjacentHTML(
+            "beforeend",
+            `<h3 ${
+              !finalizada
+                ? "class='nFinalizada' title='Não está finalizada'"
+                : ""
+            } >${os}</h3>`
+          );
 
         const obj = origens.map((orig) => {
           const nf = todasMO.find((el) => el.origem === orig);
@@ -189,36 +89,20 @@ document.addEventListener("click", async (e) => {
             ].classList.add("valoresDiferentes");
         }
 
-        obj.forEach((nf) => {
-          resultado
-            .querySelector(`.tipo${nf.origem}`)
-            .insertAdjacentHTML(
-              "beforeend",
-              `<h3 class="${nf.tipo === "-" ? "h3Null" : ""} ${
-                valoresDiferentes.length > 1 ? "valoresDiferentes" : ""
-              }">${
-                nf.tipo === "M"
-                  ? "Mão de Obra"
-                  : nf.tipo === "P"
-                  ? "Peças"
-                  : "-"
-              }</h3>`
-            );
-          resultado
-            .querySelector(`.valor${nf.origem}`)
-            .insertAdjacentHTML(
-              "beforeend",
-              `<h3 class="${nf.valor === "-" ? "h3Null" : ""} ${
-                valoresDiferentes.length > 1 ? "valoresDiferentes" : ""
-              }">${toBRL(nf.valor)}</h3>`
-            );
-        });
+        writeResult(obj, valoresDiferentes);
       }
 
       if (todasPC.length > 0) {
         resultado
           .querySelector(".numeroOS")
-          .insertAdjacentHTML("beforeend", `<h3>${os}</h3>`);
+          .insertAdjacentHTML(
+            "beforeend",
+            `<h3  ${
+              !finalizada
+                ? "class='nFinalizada' title='Não está finalizada'"
+                : ""
+            } >${os}</h3>`
+          );
 
         const obj = origens.map((orig) => {
           const nf = todasPC.find((el) => el.origem === orig);
@@ -238,30 +122,7 @@ document.addEventListener("click", async (e) => {
             ].classList.add("valoresDiferentes");
         }
 
-        obj.forEach((nf) => {
-          resultado
-            .querySelector(`.tipo${nf.origem}`)
-            .insertAdjacentHTML(
-              "beforeend",
-              `<h3  class="${nf.tipo === "-" ? "h3Null" : ""} ${
-                valoresDiferentes.length > 1 ? "valoresDiferentes" : ""
-              }">${
-                nf.tipo === "M"
-                  ? "Mão de Obra"
-                  : nf.tipo === "P"
-                  ? "Peças"
-                  : "-"
-              }</h3>`
-            );
-          resultado
-            .querySelector(`.valor${nf.origem}`)
-            .insertAdjacentHTML(
-              "beforeend",
-              `<h3 class="${nf.valor === "-" ? "h3Null" : ""} ${
-                valoresDiferentes.length > 1 ? "valoresDiferentes" : ""
-              }">${toBRL(nf.valor)}</h3>`
-            );
-        });
+        writeResult(obj, valoresDiferentes);
       }
     });
   }
